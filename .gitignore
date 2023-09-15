@@ -1,0 +1,10 @@
+# Ignore Node.js modules
+node_modules/
+
+# Ignore logs and temporary files
+logs/
+*.log
+.DS_Store
+
+# Ignore environment variables
+.env
