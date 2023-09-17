@@ -195,6 +195,94 @@ app.get("/api/products/search", (req, res) => {
 
 
 
+app.get("/api/products/sort", (req, res) => {
+  const { sortBy } = req.query;
+
+  // Check if sortBy parameter is provided
+  if (!sortBy) {
+    return res
+      .status(400)
+      .json({ error: "Sort criteria (sortBy) is required" });
+  }
+
+  // Define a SQL query to sort products based on the specified criteria
+  let query = "SELECT * FROM Product";
+
+  // Add the ORDER BY clause based on the specified sortBy parameter
+  switch (sortBy) {
+    case "price":
+      query += " ORDER BY price ASC";
+      break;
+    case "popularity":
+      query = `SELECT p.*, IFNULL(pl.likes, 0) AS like_count
+      FROM Product p
+      LEFT JOIN ProductLikes pl ON p.product_id = pl.product_id
+      ORDER BY like_count DESC;`;
+      break;
+    case "releaseDate":
+      query += " ORDER BY release_date DESC";
+      break;
+    default:
+      return res
+        .status(400)
+        .json({ error: "Invalid sort criteria specified" });
+  }
+
+  db.query(query, (err, results) => {
+    if (err) {
+      return res
+        .status(500)
+        .json({ error: "Database error", q: query });
+    }
+
+    if (results.length === 0) {
+      return res
+        .status(404)
+        .json({ error: "No products found" });
+    }
+
+    // Return the sorted products as JSON
+    res.status(200).json(results);
+  });
+});
+
+
+// Endpoint for Product Details
+// Endpoint for Product Details
+app.get('/api/products/:product_id/details', (req, res) => {
+  const productId = req.params.product_id;
+
+  // Fetch product details for the specified product_id
+  db.query(
+    'SELECT pd.*, p.is_available FROM product_details pd JOIN product p ON pd.product_id = p.product_id WHERE pd.product_id = ?',
+    [productId],
+    (err, results) => {
+      if (err) {
+        console.error('Database query error:', err);
+        res.status(500).json({ error: 'Internal server error' });
+      } else if (results.length === 0) {
+        res.status(404).json({ error: 'Product details not found' });
+      } else {
+        const productDetails = results[0];
+        res.status(200).json(productDetails);
+      }
+    }
+  );
+});
+
+// Endpoint for Product Categories
+app.get('/api/categories', (req, res) => {
+  // Fetch a list of product categories from the Category table
+  db.query('SELECT * FROM Category', (err, results) => {
+    if (err) {
+      console.error('Database query error:', err);
+      res.status(500).json({ error: 'Internal server error' });
+    } else {
+      const categories = results.map(category => category.category);
+      res.status(200).json(categories);
+    }
+  });
+});
 
 app.listen(3000, () => {
   console.log('Server running at 3000');
