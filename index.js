@@ -13,7 +13,7 @@ const db = mysql.createConnection({
 // Middleware
 app.use(express.json());
 
-//tasl 1
+//task 1
 app.get('/api/products', (req, res) => {
   db.query('SELECT * FROM product;', (err, result) => {
     if (err) {
