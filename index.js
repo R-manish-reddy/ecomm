@@ -104,6 +104,23 @@ app.get('/api/products/filter', (req, res) => {
   });
 });
 
+
+//task 4
+// Endpoint for Product Categories
+app.get('/api/categories', (req, res) => {
+  // Fetch a list of product categories from the Category table
+  db.query('SELECT * FROM Category', (err, results) => {
+    if (err) {
+      console.error('Database query error:', err);
+      res.status(500).json({ error: 'Internal server error' });
+    } else {
+      const categories = results.map(category => category.category);
+      res.status(200).json(categories);
+    }
+  });
+});
+
+
 //task 5
 app.get('/api/products/:product_id/reviews', (req, res) => {
   const productId = req.params.product_id; // Get the product_id from the URL parameter
@@ -143,6 +160,7 @@ app.get('/api/product/:id/related', (req, res) => {
   });
 });
 
+//task 7
 // Endpoint for retrieving product images
 app.get('/api/products/:product_id/images', (req, res) => {
   const productId = req.params.product_id;
@@ -162,7 +180,7 @@ app.get('/api/products/:product_id/images', (req, res) => {
 });
 
 
-
+//task 8
 app.get("/api/products/search", (req, res) => {
   const keywords = req.query.keyword;
 
@@ -195,6 +213,7 @@ app.get("/api/products/search", (req, res) => {
 
 
 
+//task 9
 app.get("/api/products/sort", (req, res) => {
   const { sortBy } = req.query;
 
@@ -247,7 +266,7 @@ app.get("/api/products/sort", (req, res) => {
 });
 
 
-// Endpoint for Product Details
+// task 10
 // Endpoint for Product Details
 app.get('/api/products/:product_id/details', (req, res) => {
   const productId = req.params.product_id;
@@ -270,19 +289,6 @@ app.get('/api/products/:product_id/details', (req, res) => {
   );
 });
 
-// Endpoint for Product Categories
-app.get('/api/categories', (req, res) => {
-  // Fetch a list of product categories from the Category table
-  db.query('SELECT * FROM Category', (err, results) => {
-    if (err) {
-      console.error('Database query error:', err);
-      res.status(500).json({ error: 'Internal server error' });
-    } else {
-      const categories = results.map(category => category.category);
-      res.status(200).json(categories);
-    }
-  });
-});
 
 app.listen(3000, () => {
   console.log('Server running at 3000');
