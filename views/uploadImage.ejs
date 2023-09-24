@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Upload</title>
+</head>
+<body>
+    <h1>Image Upload Form</h1>
+    
+    <form action="/api/products/upload-images" method="POST" enctype="multipart/form-data">
+        <input type="file" name="images[]" multiple />
+        <input type="text" name="product_id" placeholder="Product ID" />
+        <input type="submit" value="Upload">
+    </form>
+    
+</body>
+</html>
